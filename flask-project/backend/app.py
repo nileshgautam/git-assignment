@@ -50,34 +50,35 @@ def submit_data():
             "success": False,
             "error": str(e)
         }), 500
-        
+
 @app.route('/submittodoitem', methods=['POST'])
 def submit_todo():
-    
-    try:
-        toDoCollection = db["todo_list"]
 
-        data = request.json
-        
+    try:
+
+        data = request.get_json()
+
+        print(data)
+
         item = {
-            "itemName" : data["item_name"],
-            "itemDescription" : data["item_description"]
+            "itemName": data.get("item_name"),
+            "itemDescription": data.get("item_description")
         }
-        
-        result = toDoCollection.insert_one(item);
+
+        result = db["todo_list"].insert_one(item)
 
         return jsonify({
-            "success": True,
-            "message": "Data inserted successfully",
-            "id": str(result.inserted_id)
-        }), 201
+            "success": True
+        })
 
     except Exception as e:
+
+        print(e)
 
         return jsonify({
             "success": False,
             "error": str(e)
         }), 500
-
+        
 if __name__ == '__main__':
     app.run(debug=True)
